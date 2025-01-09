@@ -1,17 +1,14 @@
 import type { proto } from '../../WAProto'
 import type { AccountSettings } from './Auth'
 import type { BufferedEventData } from './Events'
-import type { LabelActionBody } from './Label'
 import type { ChatLabelAssociationActionBody } from './LabelAssociation'
 import type { MessageLabelAssociationActionBody } from './LabelAssociation'
-import type { MinimalMessage, WAMessageKey } from './Message'
+import type { MinimalMessage } from './Message'
 
 /** privacy settings in WhatsApp Web */
 export type WAPrivacyValue = 'all' | 'contacts' | 'contact_blacklist' | 'none'
 
 export type WAPrivacyOnlineValue = 'all' | 'match_last_seen'
-
-export type WAPrivacyGroupAddValue = 'all' | 'contacts' | 'contact_blacklist'
 
 export type WAReadReceiptsValue = 'all' | 'none'
 
@@ -78,9 +75,7 @@ export type ChatModification =
         mute: number | null
     }
     | {
-        clear: boolean
-    } | {
-        deleteForMe: { deleteMedia: boolean, key: WAMessageKey, timestamp: number }
+        clear: 'all' | { messages: { id: string, fromMe?: boolean, timestamp: number }[] }
     }
     | {
         star: {
@@ -93,8 +88,6 @@ export type ChatModification =
         lastMessages: LastMessageList
     }
     | { delete: true, lastMessages: LastMessageList }
-    // Label
-    | { addLabel: LabelActionBody }
     // Label assosiation
     | { addChatLabel: ChatLabelAssociationActionBody }
     | { removeChatLabel: ChatLabelAssociationActionBody }
