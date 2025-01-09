@@ -89,6 +89,16 @@ connectToWhatsApp()
 
 If the connection is successful, you will see a QR code printed on your terminal screen, scan it with WhatsApp on your phone and you'll be logged in!
 
+**Note:** install `qrcode-terminal` using `yarn add qrcode-terminal` to auto-print the QR to the terminal.
+
+**Note:** the code to support the legacy version of WA Web (pre multi-device) has been removed in v5. Only the standard multi-device connection is now supported. This is done as WA seems to have completely dropped support for the legacy version.
+
+## Connecting native mobile api
+
+Baileys also supports the native mobile API, which allows users to authenticate as a standalone WhatsApp client using their phone number.
+
+Run the [example](Example/example.ts) file with ``--mobile`` cli flag to use the native mobile API.
+
 ## Configuring the Connection
 
 You can configure the connection by passing a `SocketConfig` object.
@@ -825,7 +835,7 @@ Of course, replace ``` xyz ``` with an actual ID.
     ```
 - To update the Groups Add privacy
     ``` ts
-    const value = 'all' // 'contacts' | 'contact_blacklist'
+    const value = 'all' // 'contacts' | 'contact_blacklist' | 'none'
     await sock.updateGroupsAddPrivacy(value)
     ```
 - To update the Default Disappearing Mode
@@ -853,158 +863,6 @@ sock.sendMessage(jid, {image: {url: url}, caption: caption}, {backgroundColor : 
     const bList = await sock.getBroadcastListInfo("1234@broadcast")
     console.log (`list name: ${bList.name}, recps: ${bList.recipients}`)
     ```
-
-
-# Baylies - Newsletter Module Enhancements
-### 1. getNewsletterInfo()
-Retrieves detailed information about a specific newsletter.
-```javascript
-const info = await baylies.getNewsletterInfo(newsletterId);
-console.log(info);
-```
-
-### 2. createNewsLetter()
-Creates a new newsletter with specified parameters.
-```javascript
-const newNewsletter = await baylies.createNewsLetter({
-  name: 'Tech Updates',
-  description: 'Latest technology news and updates.',
-  picture: 'path/to/picture.jpg'
-});
-console.log(newNewsletter);
-```
-
-### 3. getSubscribedNewsletters()
-Fetches a list of newsletters the user is subscribed to.
-```javascript
-const newsletters = await baylies.getSubscribedNewsletters();
-console.log(newsletters);
-```
-
-### 4. toggleMuteNewsletter()
-Toggles the mute setting for a newsletter.
-```javascript
-await baylies.toggleMuteNewsletter(newsletterId);
-console.log('Newsletter mute toggled.');
-```
-
-### 5. followNewsletter()
-Follows a newsletter to receive updates.
-```javascript
-await baylies.followNewsletter(newsletterId);
-console.log('Followed the newsletter.');
-```
-
-### 6. unFollowNewsletter()
-Stops following a newsletter.
-```javascript
-await baylies.unFollowNewsletter(newsletterId);
-console.log('Unfollowed the newsletter.');
-```
-
-### 7. updateNewsletterName()
-Updates the name of a newsletter.
-```javascript
-await baylies.updateNewsletterName(newsletterId, 'New Name');
-console.log('Newsletter name updated.');
-```
-
-### 8. updateNewsletterDesc()
-Updates the description of a newsletter.
-```javascript
-await baylies.updateNewsletterDesc(newsletterId, 'New description.');
-console.log('Newsletter description updated.');
-```
-
-### 9. updateNewsletterPicture()
-Updates the profile picture of a newsletter.
-```javascript
-await baylies.updateNewsletterPicture(newsletterId, 'path/to/new/picture.jpg');
-console.log('Newsletter picture updated.');
-```
-
-### 10. updateNewsletterReactionSetting()
-Modifies the reaction settings for newsletter messages.
-```javascript
-await baylies.updateNewsletterReactionSetting(newsletterId, {
-  reactionsEnabled: true
-});
-console.log('Reaction settings updated.');
-```
-
-### 11. removeNewsletterPicture()
-Removes the current profile picture of a newsletter.
-```javascript
-await baylies.removeNewsletterPicture(newsletterId);
-console.log('Newsletter picture removed.');
-```
-
-## Messaging Features
-
-### Receive Newsletter Messages
-Supports receiving messages from newsletters.
-```javascript
-baylies.on('newsletterMessage', (message) => {
-  console.log('Received newsletter message:', message);
-});
-```
-
-### Send Newsletter Messages
-Allows sending various types of content in newsletter messages.
-
-#### Sending a Text Message
-```javascript
-await baylies.sendNewsletterMessage(newsletterId, {
-  type: 'text',
-  content: 'Welcome to our newsletter!'
-});
-```
-
-#### Sending an Image
-```javascript
-await baylies.sendNewsletterMessage(newsletterId, {
-  type: 'image',
-  content: 'path/to/image.jpg'
-});
-```
-
-#### Sending a Video
-```javascript
-await baylies.sendNewsletterMessage(newsletterId, {
-  type: 'video',
-  content: 'path/to/video.mp4'
-});
-```
-
-#### Sending a PTT (Push-to-Talk Audio)
-```javascript
-await baylies.sendNewsletterMessage(newsletterId, {
-  type: 'ptt',
-  content: 'path/to/audio.ogg'
-});
-```
-
-#### Sending a Sticker
-```javascript
-await baylies.sendNewsletterMessage(newsletterId, {
-  type: 'sticker',
-  content: 'stickerId'
-});
-```
-
-#### Editing a Message
-```javascript
-await baylies.editNewsletterMessage(newsletterId, messageId, 'Updated content.');
-console.log('Message edited.');
-```
-
-#### Deleting a Message
-```javascript
-await baylies.deleteNewsletterMessage(newsletterId, messageId);
-console.log('Message deleted.');
-```
-
-
 
 ## Writing Custom Functionality
 Baileys is written with custom functionality in mind. Instead of forking the project & re-writing the internals, you can simply write your own extensions.
