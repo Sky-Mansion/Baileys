@@ -8,11 +8,12 @@ import { GroupMetadata, ParticipantAction, RequestJoinAction, RequestJoinMethod 
 import { Label } from './Label'
 import { LabelAssociation } from './LabelAssociation'
 import { MessageUpsertType, MessageUserReceiptUpdate, WAMessage, WAMessageKey, WAMessageUpdate } from './Message'
+import { NewsletterSettingsUpdate, NewsletterViewRole, SubscriberAction } from './Newsletter'
 import { ConnectionState } from './State'
 
 export type BaileysEventMap = {
     /** connection state has been updated -- WS closed, opened, connecting etc. */
-	'connection.update': Partial<ConnectionState>
+    'connection.update': Partial<ConnectionState>
     /** credentials updated -- some metadata, keys or something */
     'creds.update': Partial<AuthenticationCreds>
     /** set chats (history sync), everything is reverse chronologically sorted */
@@ -29,7 +30,7 @@ export type BaileysEventMap = {
     'chats.upsert': Chat[]
     /** update the given chats */
     'chats.update': ChatUpdate[]
-    'chats.phoneNumberShare': {lid: string, jid: string}
+    'chats.phoneNumberShare': { lid: string, jid: string }
     /** delete chats with given ID */
     'chats.delete': string[]
     /** presence of contact in a chat updated */
@@ -57,6 +58,12 @@ export type BaileysEventMap = {
     /** apply an action to participants in a group */
     'group-participants.update': { id: string, author: string, participants: string[], action: ParticipantAction }
     'group.join-request': { id: string, author: string, participant: string, action: RequestJoinAction, method: RequestJoinMethod }
+
+    'newsletter.reaction': { id: string, server_id: string, reaction: { code?: string, count?: number, removed?: boolean } }
+    'newsletter.view': { id: string, server_id: string, count: number }
+    /**don't handles subscribe/unsubscribe actions */
+    'newsletter-participants.update': { id: string, author: string, user: string, new_role: NewsletterViewRole, action: SubscriberAction }
+    'newsletter-settings.update': { id: string, update: NewsletterSettingsUpdate }
 
     'blocklist.set': { blocklist: string[] }
     'blocklist.update': { blocklist: string[], type: 'add' | 'remove' }
@@ -94,8 +101,8 @@ export type BufferedEventData = {
 export type BaileysEvent = keyof BaileysEventMap
 
 export interface BaileysEventEmitter {
-	on<T extends keyof BaileysEventMap>(event: T, listener: (arg: BaileysEventMap[T]) => void): void
+    on<T extends keyof BaileysEventMap>(event: T, listener: (arg: BaileysEventMap[T]) => void): void
     off<T extends keyof BaileysEventMap>(event: T, listener: (arg: BaileysEventMap[T]) => void): void
     removeAllListeners<T extends keyof BaileysEventMap>(event: T): void
-	emit<T extends keyof BaileysEventMap>(event: T, arg: BaileysEventMap[T]): boolean
+    emit<T extends keyof BaileysEventMap>(event: T, arg: BaileysEventMap[T]): boolean
 }

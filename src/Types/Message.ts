@@ -14,7 +14,7 @@ export type WAMessage = proto.IWebMessageInfo
 export type WAMessageContent = proto.IMessage
 export type WAContactMessage = proto.Message.IContactMessage
 export type WAContactsArrayMessage = proto.Message.IContactsArrayMessage
-export type WAMessageKey = proto.IMessageKey
+export type WAMessageKey = proto.IMessageKey & { server_id?: string }
 export type WATextMessage = proto.Message.IExtendedTextMessage
 export type WAContextInfo = proto.IContextInfo
 export type WALocationMessage = proto.Message.ILocationMessage
@@ -64,7 +64,7 @@ type ViewOnce = {
 }
 
 type Editable = {
-  edit?: WAMessageKey
+    edit?: WAMessageKey
 }
 type WithDimensions = {
     width?: number
@@ -141,10 +141,10 @@ export type WASendableProduct = Omit<proto.Message.ProductMessage.IProductSnapsh
 
 export type AnyRegularMessageContent = (
     ({
-	    text: string
+        text: string
         linkPreview?: WAUrlInfo | null
     }
-    & Mentionable & Contextable & Editable)
+        & Mentionable & Contextable & Editable)
     | AnyMediaMessageContent
     | ({
         poll: PollMessageOptions
@@ -186,13 +186,13 @@ export type AnyRegularMessageContent = (
 ) & ViewOnce
 
 export type AnyMessageContent = AnyRegularMessageContent | {
-	forward: WAMessage
-	force?: boolean
+    forward: WAMessage
+    force?: boolean
 } | {
     /** Delete your message or anyone's message in a group (admin required) */
-	delete: WAMessageKey
+    delete: WAMessageKey
 } | {
-	disappearingMessagesInChat: boolean | number
+    disappearingMessagesInChat: boolean | number
 }
 
 export type GroupMetadataParticipants = Pick<GroupMetadata, 'participants'>
@@ -218,9 +218,9 @@ export type MessageRelayOptions = MinimalRelayOptions & {
 
 export type MiscMessageGenerationOptions = MinimalRelayOptions & {
     /** optional, if you want to manually set the timestamp of the message */
-	timestamp?: Date
+    timestamp?: Date
     /** the message you want to quote */
-	quoted?: WAMessage
+    quoted?: WAMessage
     /** disappearing messages settings */
     ephemeralExpiration?: number | string
     /** timeout for media upload to WA server */
@@ -235,13 +235,13 @@ export type MiscMessageGenerationOptions = MinimalRelayOptions & {
     broadcast?: boolean
 }
 export type MessageGenerationOptionsFromContent = MiscMessageGenerationOptions & {
-	userJid: string
+    userJid: string
 }
 
 export type WAMediaUploadFunction = (readStream: Readable, opts: { fileEncSha256B64: string, mediaType: MediaType, timeoutMs?: number }) => Promise<{ mediaUrl: string, directPath: string }>
 
 export type MediaGenerationOptions = {
-	logger?: Logger
+    logger?: Logger
     mediaTypeOverride?: MediaType
     upload: WAMediaUploadFunction
     /** cache media so it does not have to be uploaded again */
@@ -256,7 +256,7 @@ export type MediaGenerationOptions = {
     font?: number
 }
 export type MessageContentGenerationOptions = MediaGenerationOptions & {
-	getUrlInfo?: (text: string) => Promise<WAUrlInfo | undefined>
+    getUrlInfo?: (text: string) => Promise<WAUrlInfo | undefined>
     getProfilePicUrl?: (jid: string, type: 'image' | 'preview') => Promise<string | undefined>
 }
 export type MessageGenerationOptions = MessageContentGenerationOptions & MessageGenerationOptionsFromContent
